@@ -1,0 +1,68 @@
+import 'dart:convert';
+
+import 'package:tsd_web/models/company.dart';
+import 'package:tsd_web/models/dm.dart';
+import 'package:http/http.dart' as http;
+import 'package:tsd_web/utils/constants.dart';
+
+abstract class Repository {
+  /// Throws [NetworkException].
+  Future<List<Dm>> fetchDm();
+}
+
+class DataRepository implements Repository {
+  @override
+  Future<List<Dm>> fetchDm() async {
+    final http.Response response = await http.get('${ConfigStorage.baseUrl}dm');
+    // headers: headers);
+    if (response.statusCode == 200) {
+      // List<Dm> dmList;
+      var dmList = (json.decode(response.body) as List)
+          .map((e) => Dm.fromJson(e))
+          .toList();
+      return dmList;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
+
+  Future<List<Company>> fetchCompany() async {
+    final http.Response response =
+        await http.get('${ConfigStorage.baseUrl}company');
+    // headers: headers);
+    if (response.statusCode == 200) {
+      // List<Dm> dmList;
+      var dmList = (json.decode(response.body) as List)
+          .map((e) => Company.fromJson(e))
+          .toList();
+      print('companies fetched');
+      return dmList;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
+
+  Future<Company> addCompany(Company company) async {
+    print('${company.toJson()}');
+    var headers = {"Content-Type": "application/json"};
+    final http.Response response = await http.post(
+        '${ConfigStorage.baseUrl}company',
+        body: company.toJson(),
+        headers: headers);
+    if (response.statusCode == 200) {
+      Company data = Company.fromJson(json.decode(response.body));
+
+      return data;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
+}
+
+class NetworkException implements Exception {}
