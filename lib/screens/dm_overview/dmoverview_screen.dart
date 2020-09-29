@@ -45,7 +45,7 @@ class _DatamatrixOverviewState extends State<DatamatrixOverview> {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      child: DataTable(
+                      child: DataTable(dataRowHeight: 85,
                           columns: [
                             DataColumn(label: Text('Организация')),
                             DataColumn(label: Text('SSCC')),
@@ -56,11 +56,11 @@ class _DatamatrixOverviewState extends State<DatamatrixOverview> {
                             DataColumn(label: Text('Datamatrix barcode')),
                           ],
                           rows: state.dmList
-                              .map((dm) => DataRow(cells: [
+                              .map((dm) => DataRow( cells: [
                                     DataCell(Text('${dm.organization}')),
                                     DataCell(Text(dm.sscc ?? "")),
                                     DataCell(Text(dm.ean)),
-                                    DataCell(Text(dm.datamatrix)),
+                                    DataCell(Text(dm.datamatrix,textAlign: TextAlign.center,),),
                                     DataCell(
                                         Checkbox(value: dm.isUsed ?? false)),
                                     DataCell(BarcodeWidget(
@@ -68,14 +68,14 @@ class _DatamatrixOverviewState extends State<DatamatrixOverview> {
                                           .code128(), // Barcode type and settings
                                       data: dm.ean, // Content
                                       width: 200,
-                                      height: 200,
+                                      height: 80,
                                     )),
                                     DataCell(BarcodeWidget(
                                       barcode: Barcode
-                                          .code128(), // Barcode type and settings
+                                          .dataMatrix(), // Barcode type and settings
                                       data: dm.datamatrix, // Content
-                                      width: 200,
-                                      height: 200,
+                                      width: 80,
+                                      height: 80,
                                     )),
                                   ]))
                               .toList()),
