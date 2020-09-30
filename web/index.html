@@ -29,5 +29,20 @@
     }
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
+  <script>
+    function ToExcel(arg, inspectionName) {
+    let blob = new Blob([arg], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"});
+    let a = document.createElement("a");
+    a.style = "display: none";
+    document.body.appendChild(a);
+    let url = window.URL.createObjectURL(blob);
+    a.href = url;
+    let date = new Date();
+    let currentDate = ('0' + date.getDate()).slice(-2)+ '-' + ('0' + (date.getMonth() + 1)).slice(-2)+ '-' + date.getFullYear() 
+    a.download = inspectionName+'_'+currentDate+'.xlsx';
+    a.click();
+   
+    }
+    </script>
 </body>
 </html>

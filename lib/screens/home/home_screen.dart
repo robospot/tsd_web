@@ -8,6 +8,7 @@ import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
+import 'package:tsd_web/utils/repository.dart';
 
 import 'cubit/home_cubit.dart';
 
@@ -60,7 +61,16 @@ class _HomeScreenState extends State<HomeScreen> {
               visible: state is Dmscreen ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_download),
-                onPressed: () => addCompany(context),
+                onPressed: () => downloadFile(context),
+              ),
+            ),
+
+            //Очистить таблицу
+            Visibility(
+              visible: state is Dmscreen ? true : false,
+              child: IconButton(
+                icon: Icon(Icons.delete_forever),
+                onPressed: () => clearDmTable(context),
               ),
             ),
           ],
@@ -178,6 +188,17 @@ uploadFile(BuildContext context) async {
   }
 }
 
+downloadFile(BuildContext context) async {
+  
+    final uploadFileCubit = context.bloc<UploadfileCubit>();
+    uploadFileCubit.downloadFile();
+  }
+
+
 refreshDm(BuildContext context) {
   context.bloc<DmoverviewCubit>().getAllDm();
+}
+
+clearDmTable(BuildContext context) async {
+  await DataRepository().clearDmTable();
 }

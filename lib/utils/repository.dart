@@ -63,6 +63,19 @@ class DataRepository implements Repository {
       return null;
     }
   }
+
+  Future<void> clearDmTable() async {
+    var headers = {"Content-Type": "application/json"};
+    final http.Response response =
+        await http.delete('${ConfigStorage.baseUrl}dm', headers: headers);
+    if (response.statusCode == 200) {
+      return null;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
 }
 
 class NetworkException implements Exception {}
