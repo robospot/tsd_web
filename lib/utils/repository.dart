@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:tsd_web/models/company.dart';
 import 'package:tsd_web/models/dm.dart';
 import 'package:http/http.dart' as http;
+import 'package:tsd_web/models/ean.dart';
 import 'package:tsd_web/utils/constants.dart';
 
 abstract class Repository {
@@ -11,7 +12,7 @@ abstract class Repository {
 }
 
 class DataRepository implements Repository {
-  @override
+  
   Future<List<Dm>> fetchDm() async {
     final http.Response response = await http.get('${ConfigStorage.baseUrl}dm');
     // headers: headers);
@@ -21,6 +22,22 @@ class DataRepository implements Repository {
           .map((e) => Dm.fromJson(e))
           .toList();
       return dmList;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
+
+  Future<List<Ean>> fetchEan() async {
+    final http.Response response = await http.get('${ConfigStorage.baseUrl}ean');
+    // headers: headers);
+    if (response.statusCode == 200) {
+      // List<Dm> dmList;
+      var eanList = (json.decode(response.body) as List)
+          .map((e) => Ean.fromJson(e))
+          .toList();
+      return eanList;
     } else {
       print('Network connection error');
       NetworkException();

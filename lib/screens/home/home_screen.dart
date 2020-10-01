@@ -6,6 +6,8 @@ import 'package:tsd_web/screens/company/company_screen.dart';
 import 'package:tsd_web/screens/company/cubit/company_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
+import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
+import 'package:tsd_web/screens/ean_overview/ean_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
 import 'package:tsd_web/utils/repository.dart';
@@ -30,11 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: state is Organizationscreen
               ? Text('Организации')
-              : Text('Обзор штрихкодов'),
+              : state is Eanscreen
+                  ? Text('Обзор материалов')
+                  : Text('Обзор штрихкодов'),
           actions: [
             //Добавить компанию
             Visibility(
-              visible: state is Organizationscreen ? true : false,
+              visible: state is Organizationscreen ? true :  false,
               child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () => addCompany(context),
@@ -42,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //Обновить
             Visibility(
-              visible: state is Dmscreen ? true : false,
+              visible: (state is Dmscreen || state is Eanscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: () => refreshDm(context),
@@ -50,18 +54,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //Загрузить файл
             Visibility(
-              visible: state is Dmscreen ? true : false,
+              visible: (state is Dmscreen || state is Eanscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_upload),
-                onPressed: () => uploadFile(context),
+                onPressed: () => state is Eanscreen ? uploadSscc(context) : uploadEan(context),
               ),
             ),
             //Сохранить файл
             Visibility(
-              visible: state is Dmscreen ? true : false,
+              visible: (state is Dmscreen ) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_download),
-                onPressed: () => downloadFile(context),
+                onPressed: () => downloadSsccFile(context),
               ),
             ),
 
@@ -101,6 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: Icon(Icons.person),
                   onTap: () => null),
               ListTile(
+                  title: new Text("Материалы"),
+                  leading: Icon(Icons.style),
+                  onTap: () => homeCubit.setEanScreen()),
+              ListTile(
                   title: new Text("Штрихкоды"),
                   leading: Icon(Icons.qr_code),
                   onTap: () => homeCubit.setDmScreen())
@@ -119,6 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (state is Dmscreen) {
       return DatamatrixOverview();
+    }
+    if (state is Eanscreen) {
+      return EanScreen();
     }
   }
 }
@@ -179,7 +190,7 @@ addCompany(BuildContext context) {
   );
 }
 
-uploadFile(BuildContext context) async {
+uploadSscc(BuildContext context) async {
   FilePickerResult result = await FilePicker.platform.pickFiles();
 
   if (result != null) {
@@ -188,12 +199,19 @@ uploadFile(BuildContext context) async {
   }
 }
 
-downloadFile(BuildContext context) async {
-  
-    final uploadFileCubit = context.bloc<UploadfileCubit>();
-    uploadFileCubit.downloadFile();
-  }
+uploadEan(BuildContext context) async {
+  FilePickerResult result = await FilePicker.platform.pickFiles();
 
+  if (result != null) {
+    final uploadEanCubit = context.bloc<EanCubit>();
+    uploadEanCubit.uploadFile(result, context);
+  }
+}
+
+downloadSsccFile(BuildContext context) async {
+  final uploadFileCubit = context.bloc<UploadfileCubit>();
+  uploadFileCubit.downloadFile();
+}
 
 refreshDm(BuildContext context) {
   context.bloc<DmoverviewCubit>().getAllDm();
