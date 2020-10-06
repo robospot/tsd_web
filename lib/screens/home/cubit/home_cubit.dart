@@ -17,5 +17,8 @@ class HomeCubit extends Cubit<HomeState> {
  Future<void> setEanScreen() async {
     emit(Eanscreen());
   }
+   Future<void> setPackListScreen() async {
+    emit(PackListscreen());
+  }
   
 }

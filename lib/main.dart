@@ -4,6 +4,7 @@ import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/login/login_screen.dart';
+import 'package:tsd_web/screens/packingList/cubit/packinglist_cubit.dart';
 import 'screens/company/cubit/company_cubit.dart';
 import 'screens/upload_file/cubit/uploadfile_cubit.dart';
 
@@ -28,6 +29,8 @@ void main() {
           create: (BuildContext context) => HomeCubit()),
            BlocProvider<EanCubit>(
           create: (BuildContext context) => EanCubit()),
+            BlocProvider<PackinglistCubit>(
+          create: (BuildContext context) => PackinglistCubit()),
     ],
     child: MyApp(),
   ));

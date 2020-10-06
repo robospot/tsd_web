@@ -9,6 +9,7 @@ import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
 import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
 import 'package:tsd_web/screens/ean_overview/ean_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
+import 'package:tsd_web/screens/packingList/packingList_screen.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
 import 'package:tsd_web/utils/repository.dart';
 
@@ -28,17 +29,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeCubit = context.bloc<HomeCubit>();
 
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
+      if (state is Organizationscreen) appBarTitle = 'Организации';
+      if (state is Dmscreen) appBarTitle = 'Обзор штрихкодов';
+      if (state is Userscreen) appBarTitle = 'Обзор пользователей';
+      if (state is PackListscreen) appBarTitle = 'Обзор упаковочных листов';
+
       return Scaffold(
         appBar: AppBar(
-          title: state is Organizationscreen
-              ? Text('Организации')
-              : state is Eanscreen
-                  ? Text('Обзор материалов')
-                  : Text('Обзор штрихкодов'),
+          title: Text(appBarTitle),
           actions: [
             //Добавить компанию
             Visibility(
-              visible: state is Organizationscreen ? true :  false,
+              visible: state is Organizationscreen ? true : false,
               child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () => addCompany(context),
@@ -57,12 +59,14 @@ class _HomeScreenState extends State<HomeScreen> {
               visible: (state is Dmscreen || state is Eanscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_upload),
-                onPressed: () => state is Eanscreen ? uploadSscc(context) : uploadEan(context),
+                onPressed: () => state is Eanscreen
+                    ? uploadSscc(context)
+                    : uploadEan(context),
               ),
             ),
             //Сохранить файл
             Visibility(
-              visible: (state is Dmscreen ) ? true : false,
+              visible: (state is Dmscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_download),
                 onPressed: () => downloadSsccFile(context),
@@ -111,7 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                   title: new Text("Штрихкоды"),
                   leading: Icon(Icons.qr_code),
-                  onTap: () => homeCubit.setDmScreen())
+                  onTap: () => homeCubit.setDmScreen()),
+                     ListTile(
+                  title: new Text("Упаковочные листы"),
+                  leading: Icon(Icons.unarchive),
+                  onTap: () => homeCubit.setPackListScreen())
             ],
           ),
         ),
@@ -130,6 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (state is Eanscreen) {
       return EanScreen();
+    }
+    if (state is PackListscreen) {
+      return PackingListScreen();
     }
   }
 }
