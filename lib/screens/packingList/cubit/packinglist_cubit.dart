@@ -16,6 +16,7 @@ class PackinglistCubit extends Cubit<PackinglistState> {
     var packList = packs.toSet().toList();
     print(packList);
     List<String> ssccList = List<String>();
+    
     emit(PackinglistLoading());
     emit(PackinglistLoaded(packList: packList, ssccList: ssccList));
   }

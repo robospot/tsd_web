@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               visible: (state is Dmscreen || state is Eanscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_upload),
-                onPressed: () => state is Eanscreen
+                onPressed: () => state is Dmscreen
                     ? uploadSscc(context)
                     : uploadEan(context),
               ),

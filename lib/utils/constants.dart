@@ -1,7 +1,7 @@
 /// Necessary constants storage.
 class ConfigStorage {
   /// Aqueduct server url.
-  static const baseUrl = 'http://213.184.250.152:7777/';
+  static const baseUrl = 'http://194.39.101.16:8888/';
   
  
 }
