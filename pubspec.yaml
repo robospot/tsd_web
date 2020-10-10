@@ -20,6 +20,8 @@ dependencies:
   barcode_widget: ^1.5.0
   excel: ^1.1.5
   file: ^5.2.1
+  equatable: ^1.2.5
+  formz: ^0.3.2
 
 dev_dependencies:
   flutter_test:

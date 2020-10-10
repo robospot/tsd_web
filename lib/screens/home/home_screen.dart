@@ -16,6 +16,9 @@ import 'package:tsd_web/utils/repository.dart';
 import 'cubit/home_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
+   static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => HomeScreen());
+  }
   HomeScreen({Key key}) : super(key: key);
 
   @override

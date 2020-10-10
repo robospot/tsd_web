@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:tsd_web/screens/home/home_screen.dart';
+import 'bloc/login_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginForm extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => LoginScreen());
+  }
+
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -26,19 +31,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    // return BlocListener<LoginBloc, LoginState>(
-    //   listener: (context, state) {
-    //     if (state is LoginFailure) {
-    //       Scaffold.of(context).showSnackBar(
-    //         SnackBar(
-    //           content: Text('${state.error}'),
-    //           backgroundColor: Colors.red,
-    //         ),
-    //       );
-    //     }
-    //   },
-    //   child: BlocBuilder<LoginBloc, LoginState>(
-    //     builder: (context, state) {
     return Scaffold(
       body: Container(
         color: Color(0xffEBF1FA),
@@ -92,10 +84,12 @@ class _LoginFormState extends State<LoginForm> {
                                       width: 0, style: BorderStyle.none),
                                   autofocus: true,
                                   // onPressed: state is! LoginLoading
-                                  onPressed: () => Navigator.of(context)
-                                      .pushReplacement(MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              HomeScreen())),
+                                  onPressed: () => onLoginButtonPressed(),
+
+                                  // Navigator.of(context)
+                                  //     .pushReplacement(MaterialPageRoute(
+                                  //         builder: (BuildContext context) =>
+                                  //             HomeScreen())),
                                   // ? onLoginButtonPressed
                                   // : null,
                                   child: Text(
@@ -179,14 +173,11 @@ class _LoginFormState extends State<LoginForm> {
         if (_usernameController.text.isEmpty ||
             _passwordController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
-        }
-        if (loginformKey.currentState.validate()) {
-          // BlocProvider.of<LoginBloc>(context).add(
-          //   LoginButtonPressed(
-          //     username: _usernameController.text,
-          //     password: _passwordController.text,
-          //   ),
-          // );
+        } else {
+          if (loginformKey.currentState.validate()) {
+            context.bloc<LoginBloc>().add(LoginSubmitted(
+                _usernameController.text, _passwordController.text));
+          }
         }
         break;
       case 1: //register

@@ -1,29 +1,54 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:tsd_web/models/user.dart';
 
 class UserRepository {
-  Future<String> authenticate({
-    @required String username,
-    @required String password,
-  }) async {
-    await Future.delayed(Duration(seconds: 1));
-    return 'token';
+  User _user;
+
+  Future<User> getUser() async {
+    if (_user != null) return _user;
+    return Future.delayed(
+      const Duration(milliseconds: 300),
+      () => _user = User('User'),
+    );
   }
 
-  Future<void> deleteToken() async {
-    /// delete from keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return;
-  }
+  Future<User> createUser() async {
+       Future<int> createUser(String email, String name, String category,
+      String username, String password, int owner) async {
+    // token = await UserRepository().getToken();
+    var headers = {
+      "Content-Type": "application/json",
+      // "Authorization": "Bearer $token"
+    };
+    var body = {
+      // "owner": owner,
+      "email": email,
+      "name": name,
+      // "category": category,
+      "username": username,
+      "password": password,
+    };
+    final http.Response response = await http.post(
+        '${ConfigStorage.baseUrl}register',
+        headers: headers,
+        body: json.encode(body));
+    if (response.statusCode == 200) {
+      User.fromJson(json.decode(response.body));
 
-  Future<void> persistToken(String token) async {
-    /// write to keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return;
+      return response.statusCode;
+    } else {
+      print('Network connection error');
+      return response.statusCode;
+    }
   }
-
-  Future<bool> hasToken() async {
-    /// read from keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return false;
+     
+     
+     
+     return Future.delayed(
+      const Duration(milliseconds: 300),
+      () => _user = User('User'),
+    );
   }
 }

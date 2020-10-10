@@ -1,12 +1,12 @@
-// part of 'authentication_cubit.dart';
+part of 'authentication_cubit.dart';
 
-// @immutable
-// abstract class AuthenticationState {}
+@immutable
+abstract class AuthenticationState {}
 
-// class AuthenticationUninitialized extends AuthenticationState {}
+class AuthenticationUninitialized extends AuthenticationState {}
 
-// class AuthenticationAuthenticated extends AuthenticationState {}
+class AuthenticationAuthenticated extends AuthenticationState {}
 
-// class AuthenticationUnauthenticated extends AuthenticationState {}
+class AuthenticationUnauthenticated extends AuthenticationState {}
 
-// class AuthenticationLoading extends AuthenticationState {}
+class AuthenticationLoading extends AuthenticationState {}
