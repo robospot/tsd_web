@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:tsd_web/utils/authentication_repository.dart';
+import 'package:tsd_web/utils/authentication/authentication_repository.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -32,8 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginState state,
   ) async* {
    
-      // yield state.copyWith(status: FormzStatus.submissionInProgress);
-      try {
+     try {
         await _authenticationRepository.logIn(
           username: event.username,
           password: event.password,
@@ -43,5 +42,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield state.copyWith(status: 'Failure');
       }
     }
-  // }
+ 
 }

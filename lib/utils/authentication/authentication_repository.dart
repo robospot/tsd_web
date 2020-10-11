@@ -1,6 +1,8 @@
 import 'dart:async';
-
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
+import 'auth_dio.dart';
+import '../constants.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
@@ -20,13 +22,25 @@ class AuthenticationRepository {
     assert(username != null);
     assert(password != null);
 
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-      () => _controller.add(AuthenticationStatus.authenticated),
-    );
+    var oauth = OAuth(
+        clientId: "com.tsd", tokenUrl: '${ConfigStorage.baseUrl}auth/token');
+
+    var token = await oauth
+        .requestToken(PasswordGrant(username: username, password: password));
+    print('AccessToken from request: ${token.accessToken}');
+
+    var authenticadedDio = Dio();
+    authenticadedDio.interceptors.add(BearerInterceptor(oauth));
+
+    authenticadedDio.get('${ConfigStorage.baseUrl}me').then((response) {
+      print(response.data);
+    });
+
+    _controller.add(AuthenticationStatus.authenticated);
   }
 
-  void logOut() {
+  void logOut() async {
+    await OAuthMemoryStorage().clear();
     _controller.add(AuthenticationStatus.unauthenticated);
   }
 

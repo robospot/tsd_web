@@ -34,7 +34,8 @@ class _CompanyScreenState extends State<CompanyScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  child: DataTable(
+                  child:
+                   DataTable(
                       columns: [
                         DataColumn(label: Text('ID')),
                         DataColumn(label: Text('Короткое название')),

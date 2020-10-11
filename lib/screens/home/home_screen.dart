@@ -2,8 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/models/company.dart';
-import 'package:tsd_web/screens/company/company_screen.dart';
-import 'package:tsd_web/screens/company/cubit/company_cubit.dart';
+import 'package:tsd_web/screens/company/cubit/company_cubit.dart~';
 import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
 import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
@@ -11,14 +10,17 @@ import 'package:tsd_web/screens/ean_overview/ean_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/packingList/packingList_screen.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
+import 'package:tsd_web/screens/vendors/company_screen.dart';
+import 'package:tsd_web/utils/authentication/bloc/authentication_bloc.dart';
 import 'package:tsd_web/utils/repository.dart';
 
 import 'cubit/home_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
-   static Route route() {
+  static Route route() {
     return MaterialPageRoute<void>(builder: (_) => HomeScreen());
   }
+
   HomeScreen({Key key}) : super(key: key);
 
   @override
@@ -92,16 +94,20 @@ class _HomeScreenState extends State<HomeScreen> {
               new DrawerHeader(
                 margin: EdgeInsets.zero,
                 padding: EdgeInsets.zero,
-                child: UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: Color(0xff2196F3)),
-                  accountName: Text('Тестовый пользователь'),
-                  accountEmail: Text("test@test.com"),
-                  currentAccountPicture: Container(
-                      decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: Color(0xff2196F3),
-                  )),
-                ),
+                child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                    builder: (context, state) {
+                      return
+                  UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(color: Color(0xff2196F3)),
+                    accountName: Text('${state.user?.name}'),
+                    accountEmail: Text("${state.user?.email}"),
+                    currentAccountPicture: Container(
+                        decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Color(0xff2196F3),
+                    )),
+                  );
+                }),
               ),
               ListTile(
                   title: new Text("Организации"),
@@ -119,10 +125,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: new Text("Штрихкоды"),
                   leading: Icon(Icons.qr_code),
                   onTap: () => homeCubit.setDmScreen()),
-                     ListTile(
+              ListTile(
                   title: new Text("Упаковочные листы"),
                   leading: Icon(Icons.unarchive),
-                  onTap: () => homeCubit.setPackListScreen())
+                  onTap: () => homeCubit.setPackListScreen()),
+                   ListTile(
+                  title: new Text("ВЫХОД"),
+                  leading: Icon(Icons.exit_to_app),
+                  onTap: () =>  context.bloc<AuthenticationBloc>().add(AuthenticationLogoutRequested()), )
             ],
           ),
         ),

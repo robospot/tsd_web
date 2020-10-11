@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tsd_web/models/user.dart';
+import 'package:tsd_web/utils/authentication/user_repository.dart';
 import 'bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final snackBar = SnackBar(
       backgroundColor: Colors.red,
-      content: Text("Input fields mustn't be empty"));
+      content: Text("Поля не могут быть пустыми"));
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 //  padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
                 // height: SizeConfig.blockSizeVertical * 60,
                 height: 361,
-                width: 681,
+                width: 750,
                 child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0)),
@@ -51,10 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         Expanded(
                           child: Container(
                               child: SizedBox(
-                            height: 50,
-                            width: 50,
+                            height: 100,
+                            width: 100,
                             child: Image.asset(
-                              'assets/logo.png',
+                              'assets/demo_logo.png',
                               fit: BoxFit.contain,
                             ),
                           )),
@@ -187,36 +189,37 @@ class _LoginScreenState extends State<LoginScreen> {
             _passwordController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
         }
+        else
         if (registerformKey.currentState.validate()) {
-          // int response = await Fetcher().createUser(
-          //     _emailController.text,
-          //     _nameController.text,
-          //     'Basic',
-          //     _usernameController.text,
-          //     _passwordController.text,
-          //     null);
-          // if (response == 200) {
-          //   Scaffold.of(context).showSnackBar(
-          //     SnackBar(
-          //       content: Text('Account successfully created'),
-          //       // backgroundColor: Colors.black,
-          //     ),
-          //   );
-          //   setState(() {
-          //     _index = 0;
-          //     restoreScreenVisibility = false;
-          //     loginScreenVisibility = true;
-          //     registerScreenVisibility = false;
-          //   });
-          // } else {
-          //   Scaffold.of(context).showSnackBar(
-          //     SnackBar(
-          //       backgroundColor: Colors.red,
-          //       content: Text('Username or email already exists '),
-          //       // backgroundColor: Colors.black,
-          //     ),
-          //   );
-          // }
+        try {
+           User user = await UserRepository().createUser(
+              _emailController.text,
+              _nameController.text,
+              _usernameController.text,
+              _passwordController.text);
+ Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Учетная запись успешно создана'),
+                // backgroundColor: Colors.black,
+              ),
+            );
+             setState(() {
+              _index = 0;
+              restoreScreenVisibility = false;
+              loginScreenVisibility = true;
+              registerScreenVisibility = false;
+            });
+        } catch (e) {
+           Scaffold.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text('Учетная запись или email уже используется '),
+                // backgroundColor: Colors.black,
+              ),
+            );
+        }
+        
+       
         }
         break;
       case 2: //restore pass

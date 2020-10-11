@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/screens/home/home_screen.dart';
 import 'screens/login/login_page.dart';
 import 'screens/splash/view/splash_page.dart';
-import 'utils/authentication/authentication.dart';
-import 'utils/authentication_repository.dart';
-import 'utils/user_repository.dart';
+import 'utils/authentication/authentication.dart~';
+import 'utils/authentication/authentication_repository.dart';
+import 'utils/authentication/user_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -46,7 +46,7 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp(debugShowCheckedModeBanner: false,
       navigatorKey: _navigatorKey,
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

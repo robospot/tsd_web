@@ -5,8 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:tsd_web/models/user.dart';
 
-import '../../authentication_repository.dart';
-import '../../user_repository.dart';
+import '../authentication_repository.dart';
+import '../user_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -53,7 +53,12 @@ class AuthenticationBloc
   ) async {
     switch (event.status) {
       case AuthenticationStatus.unauthenticated:
-        return const AuthenticationState.unauthenticated();
+        // return const AuthenticationState.unauthenticated();
+         final user = await _tryGetUser();
+        return user != null
+            ? AuthenticationState.authenticated(user)
+            : const AuthenticationState.unauthenticated();
+
       case AuthenticationStatus.authenticated:
         final user = await _tryGetUser();
         return user != null
