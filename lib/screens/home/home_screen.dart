@@ -10,6 +10,7 @@ import 'package:tsd_web/screens/ean_overview/ean_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/packingList/packingList_screen.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
+import 'package:tsd_web/screens/vendor_user/vendorUser_screen.dart';
 import 'package:tsd_web/screens/vendors/company_screen.dart';
 import 'package:tsd_web/utils/authentication/bloc/authentication_bloc.dart';
 import 'package:tsd_web/utils/repository.dart';
@@ -38,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (state is Dmscreen) appBarTitle = 'Обзор штрихкодов';
       if (state is Userscreen) appBarTitle = 'Обзор пользователей';
       if (state is PackListscreen) appBarTitle = 'Обзор упаковочных листов';
+      if (state is VendorUserscreen) appBarTitle = 'Обзор пользователей';
 
       return Scaffold(
         appBar: AppBar(
@@ -116,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                   title: new Text("Сотрудники"),
                   leading: Icon(Icons.person),
-                  onTap: () => null),
+                  onTap: () => homeCubit.setVendorUserScreen()),
               ListTile(
                   title: new Text("Материалы"),
                   leading: Icon(Icons.style),
@@ -154,6 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (state is PackListscreen) {
       return PackingListScreen();
+    }
+    if (state is VendorUserscreen) {
+      return VendorUserScreen();
     }
   }
 }

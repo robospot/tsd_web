@@ -8,4 +8,5 @@ class Organizationscreen extends HomeState {}
 class Dmscreen extends HomeState {}
 class Eanscreen extends HomeState {}
 class PackListscreen extends HomeState {}
+class VendorUserscreen extends HomeState {}
 

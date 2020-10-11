@@ -8,3 +8,10 @@ abstract class VendoruserState extends Equatable {
 }
 
 class VendoruserInitial extends VendoruserState {}
+
+class VendoruserLoading extends VendoruserState {}
+
+class VendoruserLoaded extends VendoruserState {
+  final List<User> vendorUserList;
+  VendoruserLoaded(this.vendorUserList);
+}

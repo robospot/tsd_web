@@ -5,6 +5,7 @@ import 'package:tsd_web/models/dm.dart';
 import 'package:http/http.dart' as http;
 import 'package:tsd_web/models/ean.dart';
 import 'package:tsd_web/models/packList.dart';
+import 'package:tsd_web/models/user.dart';
 import 'package:tsd_web/utils/constants.dart';
 
 abstract class Repository {
@@ -80,6 +81,25 @@ class DataRepository implements Repository {
       return null;
     }
   }
+
+Future<List<User>> fetchVendorUser() async {
+    final http.Response response =
+        await http.get('${ConfigStorage.baseUrl}users');
+    // headers: headers);
+    if (response.statusCode == 200) {
+      // List<Dm> dmList;
+      var vendorUserList = (json.decode(response.body) as List)
+          .map((e) => User.fromJson(e))
+          .toList();
+      print('users fetched');
+      return vendorUserList;
+    } else {
+      print('Network connection error');
+      NetworkException();
+      return null;
+    }
+  }
+
 
   Future<Company> addCompany(Company company) async {
     print('${company.toJson()}');
