@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-
+import 'package:tsd_web/models/company.dart';
 
 class User {
   int id;
   String username;
   String name;
-  String surname;
+  Company vendororg;
+  int vendororgid;
   String email;
   String password;
   String createdAt;
@@ -15,20 +16,19 @@ class User {
     this.id,
     this.username,
     this.name,
-    this.surname,
+    this.vendororg,
+    this.vendororgid,
     this.email,
     this.password,
     this.createdAt,
     this.updatedAt,
   });
-  
- 
 
   User copyWith({
     int id,
     String username,
     String name,
-    String surname,
+    Company vendororg,
     String email,
     String password,
     String createdAt,
@@ -38,7 +38,7 @@ class User {
       id: id ?? this.id,
       username: username ?? this.username,
       name: name ?? this.name,
-      surname: surname ?? this.surname,
+      vendororg: vendororg ?? this.vendororg,
       email: email ?? this.email,
       password: password ?? this.password,
       createdAt: createdAt ?? this.createdAt,
@@ -51,7 +51,8 @@ class User {
       'id': id,
       'username': username,
       'name': name,
-      'surname': surname,
+      // 'vendororg': vendororg?.toMap(),
+      'vendororg': {"id": vendororg?.id},
       'email': email,
       'password': password,
       'createdAt': createdAt,
@@ -61,12 +62,11 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
     return User(
       id: map['id'],
       username: map['username'],
       name: map['name'],
-      surname: map['surname'],
+      vendororg: Company?.fromMap(map['vendororg']),
       email: map['email'],
       password: map['password'],
       createdAt: map['createdAt'],
@@ -80,33 +80,33 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, name: $name, surname: $surname, email: $email, password: $password, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, username: $username, name: $name, vendororg: $vendororg, email: $email, password: $password, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
+
     return o is User &&
-      o.id == id &&
-      o.username == username &&
-      o.name == name &&
-      o.surname == surname &&
-      o.email == email &&
-      o.password == password &&
-      o.createdAt == createdAt &&
-      o.updatedAt == updatedAt;
+        o.id == id &&
+        o.username == username &&
+        o.name == name &&
+        o.vendororg == vendororg &&
+        o.email == email &&
+        o.password == password &&
+        o.createdAt == createdAt &&
+        o.updatedAt == updatedAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      username.hashCode ^
-      name.hashCode ^
-      surname.hashCode ^
-      email.hashCode ^
-      password.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode;
+        username.hashCode ^
+        name.hashCode ^
+        vendororg.hashCode ^
+        email.hashCode ^
+        password.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

@@ -28,8 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool restoreScreenVisibility = false;
 
   final snackBar = SnackBar(
-      backgroundColor: Colors.red,
-      content: Text("Поля не могут быть пустыми"));
+      backgroundColor: Colors.red, content: Text("Поля не могут быть пустыми"));
 
   @override
   Widget build(BuildContext context) {
@@ -188,38 +187,36 @@ class _LoginScreenState extends State<LoginScreen> {
             _usernameController.text.isEmpty ||
             _passwordController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
-        }
-        else
-        if (registerformKey.currentState.validate()) {
-        try {
-           User user = await UserRepository().createUser(
-              _emailController.text,
-              _nameController.text,
-              _usernameController.text,
-              _passwordController.text);
- Scaffold.of(context).showSnackBar(
+        } else if (registerformKey.currentState.validate()) {
+          try {
+            User user = await UserRepository().createUser(
+                email: _emailController.text,
+                name: _nameController.text,
+                username: _usernameController.text,
+                password: _passwordController.text,
+                vendororgid: null);
+
+            Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text('Учетная запись успешно создана'),
                 // backgroundColor: Colors.black,
               ),
             );
-             setState(() {
+            setState(() {
               _index = 0;
               restoreScreenVisibility = false;
               loginScreenVisibility = true;
               registerScreenVisibility = false;
             });
-        } catch (e) {
-           Scaffold.of(context).showSnackBar(
+          } catch (e) {
+            Scaffold.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.red,
                 content: Text('Учетная запись или email уже используется '),
                 // backgroundColor: Colors.black,
               ),
             );
-        }
-        
-       
+          }
         }
         break;
       case 2: //restore pass

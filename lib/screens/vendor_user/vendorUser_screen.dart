@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/screens/vendor_user/cubit/vendoruser_cubit.dart';
 
+
 class VendorUserScreen extends StatefulWidget {
   VendorUserScreen({Key key}) : super(key: key);
 
@@ -28,7 +29,10 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
         );
       }
       if (state is VendoruserLoaded) {
-        return Container(
+        return 
+        
+        
+        Container(
           child: Column(
             children: [
               Expanded(
@@ -41,7 +45,7 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
                       ],
                       rows: state.vendorUserList
                           .map((user) => DataRow(cells: [
-                                DataCell(Text("${user.id}")),
+                                DataCell(Text("${user.vendororg.shortName}")),
                                 DataCell(Text(user.name)),
                                 DataCell(Text(user.email))
                               ]))
@@ -50,7 +54,7 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
               ),
             ],
           ),
-        );
+         );
       }
     })));
   }

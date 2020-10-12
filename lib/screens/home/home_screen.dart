@@ -2,7 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/models/company.dart';
-import 'package:tsd_web/screens/company/cubit/company_cubit.dart~';
+import 'package:tsd_web/models/user.dart';
 import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
 import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
@@ -10,8 +10,10 @@ import 'package:tsd_web/screens/ean_overview/ean_screen.dart';
 import 'package:tsd_web/screens/home/cubit/home_cubit.dart';
 import 'package:tsd_web/screens/packingList/packingList_screen.dart';
 import 'package:tsd_web/screens/upload_file/cubit/uploadfile_cubit.dart';
+import 'package:tsd_web/screens/vendor_user/cubit/vendoruser_cubit.dart';
 import 'package:tsd_web/screens/vendor_user/vendorUser_screen.dart';
 import 'package:tsd_web/screens/vendors/company_screen.dart';
+import 'package:tsd_web/screens/vendors/cubit/company_cubit.dart';
 import 'package:tsd_web/utils/authentication/bloc/authentication_bloc.dart';
 import 'package:tsd_web/utils/repository.dart';
 
@@ -30,6 +32,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String appBarTitle = '';
+  String company = '';
+  onGroupChanged(String group) {
+    company = group;
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeCubit = context.bloc<HomeCubit>();
@@ -47,10 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             //Добавить компанию
             Visibility(
-              visible: state is Organizationscreen ? true : false,
+              visible:
+                  (state is Organizationscreen || state is VendorUserscreen)
+                      ? true
+                      : false,
               child: IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () => addCompany(context),
+                onPressed: () => state is Organizationscreen
+                    ? addCompany(context)
+                    : addUser(context),
               ),
             ),
             //Обновить
@@ -98,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.zero,
                 child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                     builder: (context, state) {
-                      return
-                  UserAccountsDrawerHeader(
+                  return UserAccountsDrawerHeader(
                     decoration: BoxDecoration(color: Color(0xff2196F3)),
                     accountName: Text('${state.user?.name}'),
                     accountEmail: Text("${state.user?.email}"),
@@ -131,10 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: new Text("Упаковочные листы"),
                   leading: Icon(Icons.unarchive),
                   onTap: () => homeCubit.setPackListScreen()),
-                   ListTile(
-                  title: new Text("ВЫХОД"),
-                  leading: Icon(Icons.exit_to_app),
-                  onTap: () =>  context.bloc<AuthenticationBloc>().add(AuthenticationLogoutRequested()), )
+              ListTile(
+                title: new Text("ВЫХОД"),
+                leading: Icon(Icons.exit_to_app),
+                onTap: () => context
+                    .bloc<AuthenticationBloc>()
+                    .add(AuthenticationLogoutRequested()),
+              )
             ],
           ),
         ),
@@ -219,6 +233,75 @@ addCompany(BuildContext context) {
   );
 }
 
+addUser(BuildContext context) {
+  final formKey = GlobalKey<FormState>();
+
+  final User newUser = User();
+  // int vendororgid = 1;
+  onGroupChanged(int company) {
+     newUser.vendororgid = company;
+  }
+
+  return showDialog<String>(
+    context: context,
+    barrierDismissible:
+        false, // dialog is dismissible with a tap on the barrier
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          'Новый пользователь',
+          style: Theme.of(context).textTheme.headline6,
+          textAlign: TextAlign.center,
+        ),
+        content: Container(
+            width: 300,
+            height: 400,
+            child: Form(
+                key: formKey,
+                child: ListView(children: <Widget>[
+                  SelectVendorOrganization(groupCallback: onGroupChanged),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Учетная запись'),
+                    onChanged: (val) => newUser.username = val,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Пароль'),
+                    onChanged: (val) => newUser.password = val,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Имя Фамилия'),
+                    onChanged: (val) => newUser.name = val,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Email'),
+                    onChanged: (val) => newUser.email = val,
+                  ),
+                ]))),
+        actions: [
+          FlatButton(
+            minWidth: 100,
+            child: Text(
+              'Отмена',
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          FlatButton(
+            minWidth: 100,
+            color: Color(0xff5580C1),
+            child: Text('Сохранить'),
+            onPressed: () {
+              if (formKey.currentState.validate()) {
+                context.bloc<VendoruserCubit>().addUser(newUser);
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 uploadSscc(BuildContext context) async {
   FilePickerResult result = await FilePicker.platform.pickFiles();
 
@@ -248,4 +331,59 @@ refreshDm(BuildContext context) {
 
 clearDmTable(BuildContext context) async {
   await DataRepository().clearDmTable();
+}
+
+//Выпадающий список, выбор организаций
+
+class SelectVendorOrganization extends StatefulWidget {
+  final ValueChanged<int> groupCallback;
+
+  SelectVendorOrganization({Key key, this.groupCallback}) : super(key: key);
+
+  @override
+  _SelectVendorOrganizationState createState() =>
+      _SelectVendorOrganizationState();
+}
+
+class _SelectVendorOrganizationState extends State<SelectVendorOrganization> {
+  List<Company> companyList;
+  int dropdownValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CompanyCubit, CompanyState>(
+      builder: (context, state) {
+        if ((state is CompanyLoading) || (state is CompanyInitial)) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (state is CompanyLoaded) {
+          companyList = state.companyList;
+          dropdownValue = null;
+
+          return Container(
+            // height: 40,
+            child: DropdownButtonFormField<int>(
+              decoration: InputDecoration(
+                  hintText: 'Организация', contentPadding: EdgeInsets.all(12)),
+              style: Theme.of(context).textTheme.bodyText2,
+              isExpanded: true,
+              onChanged: (int newValue) {
+                widget.groupCallback(newValue);
+                dropdownValue = newValue;
+                setState(() {});
+              },
+              value: dropdownValue,
+              items: companyList.map<DropdownMenuItem<int>>((Company company) {
+                return DropdownMenuItem<int>(
+                  value: company.id,
+                  child: Text(company.shortName),
+                );
+              }).toList(),
+            ),
+          );
+        }
+      },
+    );
+  }
 }

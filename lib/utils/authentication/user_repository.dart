@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:tsd_web/models/company.dart';
 import 'package:tsd_web/models/user.dart';
 
 import 'auth_dio.dart';
@@ -14,27 +15,34 @@ class UserRepository {
     var authenticadedDio = Dio();
     authenticadedDio.interceptors.add(BearerInterceptor(oauth));
 
-    Response response = await authenticadedDio.get('${ConfigStorage.baseUrl}me');
-    
-         print(response.data);
-      _user =   User.fromJson(response.data);
-      print(_user.name);
-     if (_user != null)
+    Response response =
+        await authenticadedDio.get('${ConfigStorage.baseUrl}me');
+
+    print(response.data);
+    _user = User.fromJson(response.data);
+    print(_user.name);
+    if (_user != null)
       return _user;
     else
       return null;
   }
 
-  Future<User> createUser(
-      String email, String name, String username, String password) async {
+  Future<User> createUser({
+    String email,
+    String name,
+    String username,
+    String password,
+    int vendororgid
+  }) async {
     Response response;
     Dio dio = new Dio();
     User _user = User(
         name: name,
         email: email,
         password: password,
-        surname: '',
-        username: username);
+        username: username,
+        vendororg: Company(id: vendororgid));
+    print(_user.toJson());
     response = await dio.post(
       '${ConfigStorage.baseUrl}register',
       data: _user.toJson(),

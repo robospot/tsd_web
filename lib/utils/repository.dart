@@ -84,7 +84,7 @@ class DataRepository implements Repository {
 
 Future<List<User>> fetchVendorUser() async {
     final http.Response response =
-        await http.get('${ConfigStorage.baseUrl}users');
+        await http.get('${ConfigStorage.baseUrl}user');
     // headers: headers);
     if (response.statusCode == 200) {
       // List<Dm> dmList;
