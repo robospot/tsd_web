@@ -66,7 +66,7 @@ class User {
       id: map['id'],
       username: map['username'],
       name: map['name'],
-      vendororg: Company?.fromMap(map['vendororg']),
+      vendororg: map['vendororg'] != null ? Company.fromMap(map['vendororg']) : null,
       email: map['email'],
       password: map['password'],
       createdAt: map['createdAt'],

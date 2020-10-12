@@ -40,12 +40,14 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
                   child: DataTable(
                       columns: [
                         DataColumn(label: Text('Компания')),
+                        DataColumn(label: Text('Учетная запись')),
                         DataColumn(label: Text('ФИО')),
                         DataColumn(label: Text('Email')),
                       ],
                       rows: state.vendorUserList
                           .map((user) => DataRow(cells: [
                                 DataCell(Text("${user.vendororg.shortName}")),
+                                DataCell(Text(user.username)),
                                 DataCell(Text(user.name)),
                                 DataCell(Text(user.email))
                               ]))

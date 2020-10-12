@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:tsd_web/models/company.dart';
 import 'package:tsd_web/models/dm.dart';
 import 'package:http/http.dart' as http;
@@ -8,33 +9,53 @@ import 'package:tsd_web/models/packList.dart';
 import 'package:tsd_web/models/user.dart';
 import 'package:tsd_web/utils/constants.dart';
 
+import 'authentication/auth_dio.dart';
+
 abstract class Repository {
   /// Throws [NetworkException].
   Future<List<Dm>> fetchDm();
 }
 
 class DataRepository implements Repository {
-  
+  var oauth = OAuth(
+      clientId: "com.tsd", tokenUrl: '${ConfigStorage.baseUrl}auth/token');
+  var request = Dio();
+
   Future<List<Dm>> fetchDm() async {
-    final http.Response response = await http.get('${ConfigStorage.baseUrl}dm');
-    // headers: headers);
-    if (response.statusCode == 200) {
-      // List<Dm> dmList;
-      var dmList = (json.decode(response.body) as List)
-          .map((e) => Dm.fromJson(e))
-          .toList();
-      return dmList;
-    } else {
-      print('Network connection error');
-      NetworkException();
-      return null;
-    }
+    request.interceptors.add(BearerInterceptor(oauth));
+    Response response = await request.get('${ConfigStorage.baseUrl}dm');
+    
+    // print(response);
+    print('--------');
+    
+    //  var dmList = (json.decode(response.data) as List)
+    //       .map((e) => Dm.fromJson(e))
+    //       .toList();
+    //   return dmList;
+
+    // return Dm.fromJson(response.toString());
+
+    // final http.Response response = await http.get('${ConfigStorage.baseUrl}dm');
+    // // headers: headers);
+    // if (response.statusCode == 200) {
+    //   // List<Dm> dmList;
+    //   var dmList = (json.decode(response.body) as List)
+    //       .map((e) => Dm.fromJson(e))
+    //       .toList();
+    //   return dmList;
+    // } else {
+    //   print('Network connection error');
+    //   NetworkException();
+    //   return null;
+    // }
   }
 
   Future<List<Ean>> fetchEan() async {
-    final http.Response response = await http.get('${ConfigStorage.baseUrl}ean');
+    final http.Response response =
+        await http.get('${ConfigStorage.baseUrl}ean');
     // headers: headers);
     if (response.statusCode == 200) {
+      print(response.body);
       // List<Dm> dmList;
       var eanList = (json.decode(response.body) as List)
           .map((e) => Ean.fromJson(e))
@@ -48,7 +69,8 @@ class DataRepository implements Repository {
   }
 
   Future<List<PackList>> fetchPackList() async {
-    final http.Response response = await http.get('${ConfigStorage.baseUrl}packlist');
+    final http.Response response =
+        await http.get('${ConfigStorage.baseUrl}packlist');
     // headers: headers);
     if (response.statusCode == 200) {
       // List<Dm> dmList;
@@ -62,7 +84,6 @@ class DataRepository implements Repository {
       return null;
     }
   }
-
 
   Future<List<Company>> fetchCompany() async {
     final http.Response response =
@@ -82,7 +103,7 @@ class DataRepository implements Repository {
     }
   }
 
-Future<List<User>> fetchVendorUser() async {
+  Future<List<User>> fetchVendorUser() async {
     final http.Response response =
         await http.get('${ConfigStorage.baseUrl}user');
     // headers: headers);
@@ -99,7 +120,6 @@ Future<List<User>> fetchVendorUser() async {
       return null;
     }
   }
-
 
   Future<Company> addCompany(Company company) async {
     print('${company.toJson()}');

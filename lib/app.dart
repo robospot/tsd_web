@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/screens/home/home_screen.dart';
 import 'screens/login/login_page.dart';
 import 'screens/splash/view/splash_page.dart';
-import 'utils/authentication/authentication.dart~';
 import 'utils/authentication/authentication_repository.dart';
+import 'utils/authentication/bloc/authentication_bloc.dart';
 import 'utils/authentication/user_repository.dart';
 
 class App extends StatelessWidget {
