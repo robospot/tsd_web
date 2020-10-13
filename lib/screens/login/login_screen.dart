@@ -32,140 +32,154 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Color(0xffEBF1FA),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Container(
-                //  padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
-                // height: SizeConfig.blockSizeVertical * 60,
-                height: 361,
-                width: 750,
-                child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                    elevation: 5.0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                              child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Image.asset(
-                              'assets/demo_logo.png',
-                              fit: BoxFit.contain,
+    return BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state.status == 'Failure')
+          {
+             final snackBar = SnackBar(
+      backgroundColor: Colors.red, content: Text("Неправильная учетная запись или пароль"));
+            return 
+            Scaffold.of(context).showSnackBar(snackBar);
+          }
+        },
+        child: Scaffold(
+          body: Container(
+            color: Color(0xffEBF1FA),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                    //  padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
+                    // height: SizeConfig.blockSizeVertical * 60,
+                    height: 361,
+                    width: 750,
+                    child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        elevation: 5.0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                  child: SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Image.asset(
+                                  'assets/demo_logo.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              )),
                             ),
-                          )),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding:
-                                EdgeInsets.only(right: 45, top: 16, bottom: 16),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Expanded(
-                                  child: IndexedStack(
-                                    index: _index,
-                                    children: <Widget>[
-                                      loginScreen(),
-                                      registerScreen(),
-                                      restorePasswordScreen()
-                                    ],
-                                  ),
-                                ),
-                                RaisedButton(
-                                  color: Color(0xff5580C1),
-                                  shape: Border.all(
-                                      width: 0, style: BorderStyle.none),
-                                  autofocus: true,
-                                  // onPressed: state is! LoginLoading
-                                  onPressed: () => onLoginButtonPressed(),
-
-                                  // Navigator.of(context)
-                                  //     .pushReplacement(MaterialPageRoute(
-                                  //         builder: (BuildContext context) =>
-                                  //             HomeScreen())),
-                                  // ? onLoginButtonPressed
-                                  // : null,
-                                  child: Text(
-                                    _index == 0
-                                        ? 'Войти'
-                                        : _index == 1
-                                            ? 'Создать учетную запись'
-                                            : 'Сбросить пароль',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                ButtonBar(
-                                  buttonMinWidth: 106,
-                                  // mainAxisAlignment:
-                                  //     MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    FlatButton(
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                    right: 45, top: 16, bottom: 16),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: IndexedStack(
+                                        index: _index,
+                                        children: <Widget>[
+                                          loginScreen(),
+                                          registerScreen(),
+                                          restorePasswordScreen()
+                                        ],
+                                      ),
+                                    ),
+                                    RaisedButton(
+                                      color: Color(0xff5580C1),
                                       shape: Border.all(
                                           width: 0, style: BorderStyle.none),
+                                      autofocus: true,
+                                      // onPressed: state is! LoginLoading
+                                      onPressed: () => onLoginButtonPressed(),
+
+                                      // Navigator.of(context)
+                                      //     .pushReplacement(MaterialPageRoute(
+                                      //         builder: (BuildContext context) =>
+                                      //             HomeScreen())),
+                                      // ? onLoginButtonPressed
+                                      // : null,
                                       child: Text(
                                         _index == 0
-                                            ? "Создать учетную запись"
+                                            ? 'Войти'
                                             : _index == 1
-                                                ? "Войти"
-                                                : "Войти",
-                                        style: TextStyle(
-                                            color: Color(0xff494F59),
-                                            fontSize: 13,
-                                            decoration:
-                                                TextDecoration.underline),
+                                                ? 'Создать учетную запись'
+                                                : 'Сбросить пароль',
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                      onPressed: () => setState(() {
-                                        if (_index == 0) {
-                                          _index = 1;
-                                          restoreScreenVisibility = false;
-                                          loginScreenVisibility = false;
-                                          registerScreenVisibility = true;
-                                        } else {
-                                          _index = 0;
-                                          restoreScreenVisibility = false;
-                                          loginScreenVisibility = true;
-                                          registerScreenVisibility = false;
-                                        }
-                                      }),
                                     ),
-                                    FlatButton(
-                                      shape: Border.all(
-                                          width: 0, style: BorderStyle.none),
-                                      child: Text(
-                                        "Забыли пароль?",
-                                        style: TextStyle(
-                                            color: Color(0xff494F59),
-                                            fontSize: 13,
-                                            decoration:
-                                                TextDecoration.underline),
-                                      ),
-                                      onPressed: () => setState(() {
-                                        _index = 2;
-                                        restoreScreenVisibility = true;
-                                        loginScreenVisibility = false;
-                                        registerScreenVisibility = false;
-                                      }),
-                                    )
+                                    ButtonBar(
+                                      buttonMinWidth: 106,
+                                      // mainAxisAlignment:
+                                      //     MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FlatButton(
+                                          shape: Border.all(
+                                              width: 0,
+                                              style: BorderStyle.none),
+                                          child: Text(
+                                            _index == 0
+                                                ? "Создать учетную запись"
+                                                : _index == 1
+                                                    ? "Войти"
+                                                    : "Войти",
+                                            style: TextStyle(
+                                                color: Color(0xff494F59),
+                                                fontSize: 13,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          ),
+                                          onPressed: () => setState(() {
+                                            if (_index == 0) {
+                                              _index = 1;
+                                              restoreScreenVisibility = false;
+                                              loginScreenVisibility = false;
+                                              registerScreenVisibility = true;
+                                            } else {
+                                              _index = 0;
+                                              restoreScreenVisibility = false;
+                                              loginScreenVisibility = true;
+                                              registerScreenVisibility = false;
+                                            }
+                                          }),
+                                        ),
+                                        FlatButton(
+                                          shape: Border.all(
+                                              width: 0,
+                                              style: BorderStyle.none),
+                                          child: Text(
+                                            "Забыли пароль?",
+                                            style: TextStyle(
+                                                color: Color(0xff494F59),
+                                                fontSize: 13,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          ),
+                                          onPressed: () => setState(() {
+                                            _index = 2;
+                                            restoreScreenVisibility = true;
+                                            loginScreenVisibility = false;
+                                            registerScreenVisibility = false;
+                                          }),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ))),
+                          ],
+                        ))),
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   onLoginButtonPressed() async {

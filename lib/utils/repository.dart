@@ -25,13 +25,10 @@ class DataRepository implements Repository {
     request.interceptors.add(BearerInterceptor(oauth));
     Response response = await request.get('${ConfigStorage.baseUrl}dm');
     
-    // print(response);
-    print('--------');
-    
-    //  var dmList = (json.decode(response.data) as List)
-    //       .map((e) => Dm.fromJson(e))
-    //       .toList();
-    //   return dmList;
+     var dmList = (response.data as List)
+          .map((e) => Dm.fromJson(e))
+          .toList();
+      return dmList;
 
     // return Dm.fromJson(response.toString());
 
@@ -51,21 +48,28 @@ class DataRepository implements Repository {
   }
 
   Future<List<Ean>> fetchEan() async {
-    final http.Response response =
-        await http.get('${ConfigStorage.baseUrl}ean');
-    // headers: headers);
-    if (response.statusCode == 200) {
-      print(response.body);
-      // List<Dm> dmList;
-      var eanList = (json.decode(response.body) as List)
+     request.interceptors.add(BearerInterceptor(oauth));
+     Response response = await request.get('${ConfigStorage.baseUrl}ean');
+  var eanList = (response.data as List)
           .map((e) => Ean.fromJson(e))
           .toList();
       return eanList;
-    } else {
-      print('Network connection error');
-      NetworkException();
-      return null;
-    }
+
+    // final http.Response response =
+    //     await http.get('${ConfigStorage.baseUrl}ean');
+    // // headers: headers);
+    // if (response.statusCode == 200) {
+    //   print(response.body);
+    //   // List<Dm> dmList;
+    //   var eanList = (json.decode(response.body) as List)
+    //       .map((e) => Ean.fromJson(e))
+    //       .toList();
+    //   return eanList;
+    // } else {
+    //   print('Network connection error');
+    //   NetworkException();
+    //   return null;
+    // }
   }
 
   Future<List<PackList>> fetchPackList() async {

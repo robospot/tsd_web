@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/models/company.dart';
 import 'package:tsd_web/models/user.dart';
+import 'package:tsd_web/screens/codeGenerator/codegenerator_screen.dart';
 import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/screens/dm_overview/dmoverview_screen.dart';
 import 'package:tsd_web/screens/ean_overview/cubit/ean_cubit.dart';
@@ -142,6 +143,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: new Text("Упаковочные листы"),
                   leading: Icon(Icons.unarchive),
                   onTap: () => homeCubit.setPackListScreen()),
+               ListTile(
+                  title: new Text("Генератор штрих-кодов"),
+                  leading: Icon(Icons.qr_code_scanner_sharp),
+                  onTap: () => homeCubit.setCodeGeneratorScreen()),   
               ListTile(
                 title: new Text("ВЫХОД"),
                 leading: Icon(Icons.exit_to_app),
@@ -173,6 +178,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (state is VendorUserscreen) {
       return VendorUserScreen();
+    }
+    if (state is CodeGeneratorscreen) {
+      return CodeGenerator();
     }
   }
 }

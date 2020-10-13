@@ -24,19 +24,24 @@ class AuthenticationRepository {
 
     var oauth = OAuth(
         clientId: "com.tsd", tokenUrl: '${ConfigStorage.baseUrl}auth/token');
+    try {
+      var token = await oauth
+          .requestToken(PasswordGrant(username: username, password: password));
+      print('AccessToken from request: ${token.accessToken}');
+      var authenticadedDio = Dio();
+      authenticadedDio.interceptors.add(BearerInterceptor(oauth));
 
-    var token = await oauth
-        .requestToken(PasswordGrant(username: username, password: password));
-    print('AccessToken from request: ${token.accessToken}');
+      authenticadedDio.get('${ConfigStorage.baseUrl}me').then((response) {
+        print(response.data);
+      });
 
-    var authenticadedDio = Dio();
-    authenticadedDio.interceptors.add(BearerInterceptor(oauth));
-
-    authenticadedDio.get('${ConfigStorage.baseUrl}me').then((response) {
-      print(response.data);
-    });
-
-    _controller.add(AuthenticationStatus.authenticated);
+      _controller.add(AuthenticationStatus.authenticated);
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.RESPONSE) {
+        throw Exception('Неправильная учетная запись или пароль');
+        
+      }
+    }
   }
 
   void logOut() async {

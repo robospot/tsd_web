@@ -17,8 +17,7 @@ class UserRepository {
 
     Response response =
         await authenticadedDio.get('${ConfigStorage.baseUrl}me');
-
-    print(response.data);
+   
     _user = User.fromJson(response.data);
     print(_user.name);
     if (_user != null)
@@ -27,13 +26,12 @@ class UserRepository {
       return null;
   }
 
-  Future<User> createUser({
-    String email,
-    String name,
-    String username,
-    String password,
-    int vendororgid
-  }) async {
+  Future<User> createUser(
+      {String email,
+      String name,
+      String username,
+      String password,
+      int vendororgid}) async {
     Response response;
     Dio dio = new Dio();
     User _user = User(
