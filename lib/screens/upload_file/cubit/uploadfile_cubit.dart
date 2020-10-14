@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:tsd_web/models/dm.dart';
+import 'package:tsd_web/models/packList.dart';
 import 'package:tsd_web/screens/dm_overview/cubit/dmoverview_cubit.dart';
 import 'package:tsd_web/utils/constants.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +40,7 @@ class UploadfileCubit extends Cubit<UploadfileState> {
     }
   }
 
+//Генерация DM файла Excel
   Future<void> downloadFile() async {
     int rowIndex = 0;
     var updater = Excel.createExcel();
@@ -74,14 +76,13 @@ class UploadfileCubit extends Cubit<UploadfileState> {
           "Использован",
           cellStyle: cellStyle);
 
-     dmList.forEach((dm) {
+    dmList.forEach((dm) {
       rowIndex++;
       updater
         ..updateCell(
             sheet,
             CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex),
-            dm.organization
-            )
+            dm.organization)
         ..updateCell(
             sheet,
             CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: rowIndex),
@@ -94,7 +95,7 @@ class UploadfileCubit extends Cubit<UploadfileState> {
             sheet,
             CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: rowIndex),
             dm.datamatrix)
-             ..updateCell(
+        ..updateCell(
             sheet,
             CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: rowIndex),
             dm.isUsed);
@@ -106,5 +107,51 @@ class UploadfileCubit extends Cubit<UploadfileState> {
 
     File file = MemoryFileSystem().file('SSCC.xls')..writeAsBytesSync(xls);
     JS.context.callMethod('ToExcel', [file.readAsBytesSync(), 'SSCC.xls']);
+  }
+
+  //Генерация PackList файла Excel
+  Future<void> downloadPackListFile() async {
+    int rowIndex = 0;
+    var updater = Excel.createExcel();
+    var sheet = 'Sheet1';
+
+    Data cell;
+
+    CellStyle cellStyle = CellStyle(
+      bold: true,
+    );
+
+    List<PackList> packList = await DataRepository().fetchPackList();
+
+//Заполнение заголовков
+    updater
+      ..updateCell(
+          sheet,
+          CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0),
+          "Упаковочный лист",
+          cellStyle: cellStyle)
+      ..updateCell(sheet,
+          CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: 0), "SSCC",
+          cellStyle: cellStyle);
+
+    packList.forEach((pl) {
+      rowIndex++;
+      updater
+        ..updateCell(
+            sheet,
+            CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex),
+            pl.packList)
+        ..updateCell(
+            sheet,
+            CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: rowIndex),
+            pl.sscc);
+    });
+
+    // Save the Changes in file
+
+    var xls = await updater.encode();
+
+    File file = MemoryFileSystem().file('Упаковочные листы.xls')..writeAsBytesSync(xls);
+    JS.context.callMethod('ToExcel', [file.readAsBytesSync(), 'Упаковочные листы.xls']);
   }
 }

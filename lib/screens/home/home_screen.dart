@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
       if (state is Organizationscreen) appBarTitle = 'Организации';
       if (state is Dmscreen) appBarTitle = 'Коды маркировки';
-      if (state is Userscreen) appBarTitle = 'Обзор пользователей';
+      if (state is Eanscreen) appBarTitle = 'Обзор материалов';
       if (state is PackListscreen) appBarTitle = 'Обзор упаковочных листов';
       if (state is VendorUserscreen) appBarTitle = 'Обзор пользователей';
 
@@ -86,10 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //Сохранить файл
             Visibility(
-              visible: (state is Dmscreen) ? true : false,
+              visible: (state is Dmscreen || state is PackListscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_download),
-                onPressed: () => downloadSsccFile(context),
+                onPressed: () => state is Dmscreen ? downloadSsccFile(context) : downloadPackListFile(context)
+                ,
               ),
             ),
 
@@ -331,6 +332,11 @@ uploadEan(BuildContext context) async {
 downloadSsccFile(BuildContext context) async {
   final uploadFileCubit = context.bloc<UploadfileCubit>();
   uploadFileCubit.downloadFile();
+}
+
+downloadPackListFile(BuildContext context) async{
+final uploadFileCubit = context.bloc<UploadfileCubit>();
+  uploadFileCubit.downloadPackListFile();
 }
 
 refreshDm(BuildContext context) {
