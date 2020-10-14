@@ -34,12 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
-          if (state.status == 'Failure')
-          {
-             final snackBar = SnackBar(
-      backgroundColor: Colors.red, content: Text("Неправильная учетная запись или пароль"));
-            return 
-            Scaffold.of(context).showSnackBar(snackBar);
+          if (state.status == 'Failure') {
+            final snackBar = SnackBar(
+                backgroundColor: Colors.red,
+                content: Text("Неправильная учетная запись или пароль"));
+            return Scaffold.of(context).showSnackBar(snackBar);
           }
         },
         child: Scaffold(
@@ -236,7 +235,37 @@ class _LoginScreenState extends State<LoginScreen> {
       case 2: //restore pass
         if (_restoreController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
-        } // word
+        } else {
+          try {
+            User user = await UserRepository().restorePass (
+                email: _restoreController.text,
+                );
+
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Пароль сброшен, проверьте электронную почту'),
+                // backgroundColor: Colors.black,
+              ),
+            );
+            setState(() {
+              _index = 0;
+              restoreScreenVisibility = false;
+              loginScreenVisibility = true;
+              registerScreenVisibility = false;
+            });
+          } catch (e) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text('Учетная запись не найдена'),
+                // backgroundColor: Colors.black,
+              ),
+            );
+          }
+
+
+        }
+      // word
       // if (restoreformKey.currentState.validate()) {
       //   String result =
       //       await Fetcher().restorePassword(_restoreController.text);

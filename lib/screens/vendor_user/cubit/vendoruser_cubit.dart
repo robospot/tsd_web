@@ -22,8 +22,8 @@ class VendoruserCubit extends Cubit<VendoruserState> {
       var currentState = state as VendoruserLoaded;
       List<User> vendorUserList = currentState.vendorUserList;
       emit(VendoruserLoading());
-
-      User _user = await UserRepository().createUser(
+try {
+    User _user = await UserRepository().createUser(
           email: user.email,
           name: user.name,
           username: user.username,
@@ -32,7 +32,12 @@ class VendoruserCubit extends Cubit<VendoruserState> {
           );
 
       vendorUserList.add(_user);
-      emit(VendoruserLoaded(vendorUserList));
+   
+} catch (e) {
+  // emit(VendoruserError(message: e.toString()));
+}
+   emit(VendoruserLoaded(vendorUserList));
+    
     }
   }
 }

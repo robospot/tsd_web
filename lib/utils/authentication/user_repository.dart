@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:tsd_web/models/company.dart';
 import 'package:tsd_web/models/user.dart';
@@ -17,7 +18,7 @@ class UserRepository {
 
     Response response =
         await authenticadedDio.get('${ConfigStorage.baseUrl}me');
-   
+
     _user = User.fromJson(response.data);
     print(_user.name);
     if (_user != null)
@@ -40,15 +41,56 @@ class UserRepository {
         password: password,
         username: username,
         vendororg: Company(id: vendororgid));
-    print(_user.toJson());
-    response = await dio.post(
-      '${ConfigStorage.baseUrl}register',
-      data: _user.toJson(),
-    );
-    print(response.data);
-    _user = null;
-    _user = User.fromJson(response.data);
-    print(_user.name);
-    return _user;
+
+    try {
+      response = await dio.post(
+        '${ConfigStorage.baseUrl}register',
+        data: _user.toJson(),
+      );
+      _user = null;
+      _user = User.fromJson(response.data);
+
+      return _user;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.RESPONSE) {
+        print('error description:');
+        print(e.response);
+        throw e.response;
+      }
+    }
+  }
+
+  Future<User> restorePass({String email}) async {
+    Response response;
+    Dio dio = new Dio();
+    // User _user = User(
+    //   // name: name,
+    //   email: email,
+    //   // password: password,
+    //   // username: username,
+    //   // vendororg: Company(id: vendororgid)
+    // );
+    // var body = {
+    //   "email": email,
+
+    // };
+      
+    try {
+      response = await dio.post(
+        '${ConfigStorage.baseUrl}restorepass/$email',
+        // data: email
+        // json.encode(email),
+      );
+      _user = null;
+      _user = User.fromJson(response.data);
+
+      return _user;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.RESPONSE) {
+        print('error description:');
+        print(e.response);
+        throw e.response;
+      }
+    }
   }
 }

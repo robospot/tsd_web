@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tsd_web/screens/vendor_user/cubit/vendoruser_cubit.dart';
 
-
 class VendorUserScreen extends StatefulWidget {
   VendorUserScreen({Key key}) : super(key: key);
 
@@ -20,19 +19,25 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Container(child:
-        BlocBuilder<VendoruserCubit, VendoruserState>(
-            builder: (context, state) {
+    return Container(
+        child: Container(
+            child: BlocBuilder<VendoruserCubit, VendoruserState>(
+    //             listener: (context, state) {
+    //   if (state is VendoruserError) {
+    //     final snackBar = SnackBar(
+    //         backgroundColor: Colors.red,
+    //         content: Text("Поля не могут быть пустыми"));
+    //     return Scaffold.of(context).showSnackBar(snackBar);
+    //   }
+    // }, 
+    builder: (context, state) {
       if (state is VendoruserLoading) {
         return Center(
           child: CircularProgressIndicator(),
         );
       }
       if (state is VendoruserLoaded) {
-        return 
-        
-        
-        Container(
+        return Container(
           child: Column(
             children: [
               Expanded(
@@ -56,7 +61,7 @@ class _VendorUserScreenState extends State<VendorUserScreen> {
               ),
             ],
           ),
-         );
+        );
       }
     })));
   }

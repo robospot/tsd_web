@@ -12,6 +12,7 @@ class _CodeGeneratorState extends State<CodeGenerator> {
   TextEditingController codeController =
       TextEditingController(text: '460123456000010');
   int value = 1;
+  int maxLength = 15;
   Barcode barcodeType = Barcode.code128();
   Size boxSize = Size(300, 100);
   @override
@@ -69,8 +70,11 @@ class _CodeGeneratorState extends State<CodeGenerator> {
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextField(
-                      decoration: InputDecoration(labelText: 'Штрих-код'),
+                      decoration: InputDecoration(
+                        labelText: 'Штрих-код',
+                      ),
                       controller: codeController,
+                      maxLength: maxLength,
                     ),
                     SizedBox(
                       height: 16,
@@ -102,21 +106,25 @@ class _CodeGeneratorState extends State<CodeGenerator> {
         codeController.text = '460123456000010';
         barcodeType = Barcode.code128();
         boxSize = Size(300, 100);
+        maxLength = 15;
         break;
       case 2: //EAN
         codeController.text = '4601234560000';
         barcodeType = Barcode.code128();
         boxSize = Size(300, 100);
+        maxLength = 13;
         break;
       case 3: //Datamatrix
         codeController.text = '201034531200000111719112510ABCD1234';
         barcodeType = Barcode.dataMatrix();
         boxSize = Size(200, 200);
+        maxLength = null;
         break;
       case 4: //Упак. лист
         codeController.text = '46012345600';
         barcodeType = Barcode.code128();
         boxSize = Size(300, 100);
+        maxLength = 11;
         break;
       default:
     }

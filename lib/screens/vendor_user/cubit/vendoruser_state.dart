@@ -15,3 +15,8 @@ class VendoruserLoaded extends VendoruserState {
   final List<User> vendorUserList;
   VendoruserLoaded(this.vendorUserList);
 }
+
+class VendoruserError extends VendoruserState {
+  final String message;
+  VendoruserError({this.message});
+}

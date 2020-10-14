@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
       if (state is Organizationscreen) appBarTitle = 'Организации';
-      if (state is Dmscreen) appBarTitle = 'Обзор штрихкодов';
+      if (state is Dmscreen) appBarTitle = 'Коды маркировки';
       if (state is Userscreen) appBarTitle = 'Обзор пользователей';
       if (state is PackListscreen) appBarTitle = 'Обзор упаковочных листов';
       if (state is VendorUserscreen) appBarTitle = 'Обзор пользователей';
@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: Icon(Icons.style),
                   onTap: () => homeCubit.setEanScreen()),
               ListTile(
-                  title: new Text("Штрихкоды"),
+                  title: new Text("Коды маркировки"),
                   leading: Icon(Icons.qr_code),
                   onTap: () => homeCubit.setDmScreen()),
               ListTile(
@@ -254,7 +254,7 @@ addUser(BuildContext context) {
     context: context,
     barrierDismissible:
         false, // dialog is dismissible with a tap on the barrier
-    builder: (BuildContext context) {
+    builder: (dialogContext) {
       return AlertDialog(
         title: Text(
           'Новый пользователь',
@@ -339,6 +339,7 @@ refreshDm(BuildContext context) {
 
 clearDmTable(BuildContext context) async {
   await DataRepository().clearDmTable();
+   context.bloc<DmoverviewCubit>().getAllDm();
 }
 
 //Выпадающий список, выбор организаций
