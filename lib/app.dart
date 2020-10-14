@@ -73,6 +73,24 @@ class _AppViewState extends State<AppView> {
         );
       },
       onGenerateRoute: (_) => SplashPage.route(),
+       theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Color(0xff445E75),
+            centerTitle: true,
+          ),
+          buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.primary,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+            buttonColor: Color(0xff5580C1),
+          ),
+           inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Color(0xff1A76767B),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide.none),
+          ))
     );
   }
 }

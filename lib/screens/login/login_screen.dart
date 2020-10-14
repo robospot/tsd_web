@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Color(0xff5580C1),
                                       shape: Border.all(
                                           width: 0, style: BorderStyle.none),
-                                      autofocus: true,
+                                  
                                       // onPressed: state is! LoginLoading
                                       onPressed: () => onLoginButtonPressed(),
 

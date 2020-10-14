@@ -90,7 +90,10 @@ class _CodeGeneratorState extends State<CodeGenerator> {
                     ),
                     RaisedButton(
                       onPressed: () => setState(() {}),
-                      child: Text("Обновить"),
+                       color: Color(0xff5580C1),
+                                      shape: Border.all(
+                                          width: 0, style: BorderStyle.none),
+                      child: Text("Обновить", style: TextStyle(color: Colors.white),),
                     )
                   ],
                 ),

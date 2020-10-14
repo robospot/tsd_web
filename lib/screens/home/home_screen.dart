@@ -45,9 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
       if (state is Organizationscreen) appBarTitle = 'Организации';
       if (state is Dmscreen) appBarTitle = 'Коды маркировки';
-      if (state is Eanscreen) appBarTitle = 'Обзор материалов';
-      if (state is PackListscreen) appBarTitle = 'Обзор упаковочных листов';
-      if (state is VendorUserscreen) appBarTitle = 'Обзор пользователей';
+      if (state is Eanscreen) appBarTitle = 'Материалы';
+      if (state is PackListscreen) appBarTitle = 'Упаковочные листы';
+      if (state is VendorUserscreen) appBarTitle = 'Сотрудники';
+      if (state is CodeGeneratorscreen) appBarTitle = 'Генератор штрих-кодов';
 
       return Scaffold(
         appBar: AppBar(
@@ -86,11 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //Сохранить файл
             Visibility(
-              visible: (state is Dmscreen || state is PackListscreen) ? true : false,
+              visible:
+                  (state is Dmscreen || state is PackListscreen) ? true : false,
               child: IconButton(
                 icon: Icon(Icons.file_download),
-                onPressed: () => state is Dmscreen ? downloadSsccFile(context) : downloadPackListFile(context)
-                ,
+                onPressed: () => state is Dmscreen
+                    ? downloadSsccFile(context)
+                    : downloadPackListFile(context),
               ),
             ),
 
@@ -113,14 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                     builder: (context, state) {
                   return UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(color: Color(0xff2196F3)),
+                    decoration: BoxDecoration(color: Color(0xff445E75)),
                     accountName: Text('${state.user?.name}'),
                     accountEmail: Text("${state.user?.email}"),
-                    currentAccountPicture: Container(
-                        decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Color(0xff2196F3),
-                    )),
+                    // currentAccountPicture: Container(
+                    //     decoration: BoxDecoration(
+                    //   shape: BoxShape.rectangle,
+                    //   color: Color(0xff2196F3),
+                    // )),
                   );
                 }),
               ),
@@ -144,10 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: new Text("Упаковочные листы"),
                   leading: Icon(Icons.unarchive),
                   onTap: () => homeCubit.setPackListScreen()),
-               ListTile(
+              ListTile(
                   title: new Text("Генератор штрих-кодов"),
                   leading: Icon(Icons.qr_code_scanner_sharp),
-                  onTap: () => homeCubit.setCodeGeneratorScreen()),   
+                  onTap: () => homeCubit.setCodeGeneratorScreen()),
               ListTile(
                 title: new Text("ВЫХОД"),
                 leading: Icon(Icons.exit_to_app),
@@ -201,20 +204,34 @@ addCompany(BuildContext context) {
           textAlign: TextAlign.center,
         ),
         content: Container(
-            width: 300,
-            height: 100,
+            width: 500,
+            height: 180,
             child: Form(
                 key: formKey,
                 child: ListView(children: <Widget>[
                   TextFormField(
-                    decoration: InputDecoration(
-                        hintText: 'Короткое наименование организации'),
-                    onChanged: (val) => newCompany.shortName = val,
-                  ),
+                      decoration: InputDecoration(
+                          labelText: 'Короткое наименование организации',
+                          helperText: ''),
+                      onChanged: (val) => newCompany.shortName = val,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }),
+                  // SizedBox(height: 8,),
                   TextFormField(
                     decoration: InputDecoration(
-                        hintText: 'Полное наименование организации'),
+                        labelText: 'Полное наименование организации',
+                        helperText: ''),
                     onChanged: (val) => newCompany.fullName = val,
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
                   ),
                 ]))),
         actions: [
@@ -248,7 +265,7 @@ addUser(BuildContext context) {
   final User newUser = User();
   // int vendororgid = 1;
   onGroupChanged(int company) {
-     newUser.vendororgid = company;
+    newUser.vendororgid = company;
   }
 
   return showDialog<String>(
@@ -264,26 +281,54 @@ addUser(BuildContext context) {
         ),
         content: Container(
             width: 300,
-            height: 400,
+            height: 420,
             child: Form(
                 key: formKey,
                 child: ListView(children: <Widget>[
                   SelectVendorOrganization(groupCallback: onGroupChanged),
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Учетная запись'),
+                    decoration: InputDecoration(
+                        labelText: 'Учетная запись', helperText: ''),
                     onChanged: (val) => newUser.username = val,
+                     validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
                   ),
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Пароль'),
+                    decoration:
+                        InputDecoration(labelText: 'Пароль', helperText: ''),
                     onChanged: (val) => newUser.password = val,
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
                   ),
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Имя Фамилия'),
+                    decoration: InputDecoration(
+                        labelText: 'Имя Фамилия', helperText: ''),
                     onChanged: (val) => newUser.name = val,
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
                   ),
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Email'),
+                    decoration:
+                        InputDecoration(labelText: 'Email', helperText: ''),
                     onChanged: (val) => newUser.email = val,
+                    validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
                   ),
                 ]))),
         actions: [
@@ -334,8 +379,8 @@ downloadSsccFile(BuildContext context) async {
   uploadFileCubit.downloadFile();
 }
 
-downloadPackListFile(BuildContext context) async{
-final uploadFileCubit = context.bloc<UploadfileCubit>();
+downloadPackListFile(BuildContext context) async {
+  final uploadFileCubit = context.bloc<UploadfileCubit>();
   uploadFileCubit.downloadPackListFile();
 }
 
@@ -345,7 +390,7 @@ refreshDm(BuildContext context) {
 
 clearDmTable(BuildContext context) async {
   await DataRepository().clearDmTable();
-   context.bloc<DmoverviewCubit>().getAllDm();
+  context.bloc<DmoverviewCubit>().getAllDm();
 }
 
 //Выпадающий список, выбор организаций
@@ -380,7 +425,9 @@ class _SelectVendorOrganizationState extends State<SelectVendorOrganization> {
             // height: 40,
             child: DropdownButtonFormField<int>(
               decoration: InputDecoration(
-                  hintText: 'Организация', contentPadding: EdgeInsets.all(12)),
+                  helperText: '',
+                  labelText: 'Организация',
+                  contentPadding: EdgeInsets.all(12)),
               style: Theme.of(context).textTheme.bodyText2,
               isExpanded: true,
               onChanged: (int newValue) {
@@ -395,6 +442,12 @@ class _SelectVendorOrganizationState extends State<SelectVendorOrganization> {
                   child: Text(company.shortName),
                 );
               }).toList(),
+               validator: (value) {
+                        if (value == null) {
+                          return 'Поле не может быть пустым';
+                        } else
+                          return null;
+                      }
             ),
           );
         }
