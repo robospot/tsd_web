@@ -22,6 +22,7 @@ dependencies:
   file: ^5.2.1
   equatable: ^1.2.5
   dio: ^3.0.10
+  validators: ^2.0.1
   
   shared_preferences: ^0.5.12
 

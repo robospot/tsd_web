@@ -17,6 +17,7 @@ import 'package:tsd_web/screens/vendors/company_screen.dart';
 import 'package:tsd_web/screens/vendors/cubit/company_cubit.dart';
 import 'package:tsd_web/utils/authentication/bloc/authentication_bloc.dart';
 import 'package:tsd_web/utils/repository.dart';
+import 'package:validators/validators.dart';
 
 import 'cubit/home_cubit.dart';
 
@@ -324,8 +325,8 @@ addUser(BuildContext context) {
                         InputDecoration(labelText: 'Email', helperText: ''),
                     onChanged: (val) => newUser.email = val,
                     validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Поле не может быть пустым';
+                        if (isEmail(value)==false) {
+                          return 'Введите корректный email';
                         } else
                           return null;
                       }

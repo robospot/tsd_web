@@ -3,6 +3,7 @@ import 'package:tsd_web/models/user.dart';
 import 'package:tsd_web/utils/authentication/user_repository.dart';
 import 'bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:validators/validators.dart';
 
 class LoginScreen extends StatefulWidget {
   static Route route() {
@@ -94,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Color(0xff5580C1),
                                       shape: Border.all(
                                           width: 0, style: BorderStyle.none),
-                                  
+
                                       // onPressed: state is! LoginLoading
                                       onPressed: () => onLoginButtonPressed(),
 
@@ -200,7 +201,15 @@ class _LoginScreenState extends State<LoginScreen> {
             _usernameController.text.isEmpty ||
             _passwordController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
-        } else if (registerformKey.currentState.validate()) {
+        } else if (isEmail(_emailController.text) == false) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text('Введите корректный email'),
+              // backgroundColor: Colors.black,
+            ),
+          );
+        } else {
           try {
             User user = await UserRepository().createUser(
                 email: _emailController.text,
@@ -236,34 +245,42 @@ class _LoginScreenState extends State<LoginScreen> {
         if (_restoreController.text.isEmpty) {
           Scaffold.of(context).showSnackBar(snackBar);
         } else {
-          try {
-            User user = await UserRepository().restorePass (
-                email: _restoreController.text,
-                );
-
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Пароль сброшен, проверьте электронную почту'),
-                // backgroundColor: Colors.black,
-              ),
-            );
-            setState(() {
-              _index = 0;
-              restoreScreenVisibility = false;
-              loginScreenVisibility = true;
-              registerScreenVisibility = false;
-            });
-          } catch (e) {
+          if (isEmail(_emailController.text) == false) {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.red,
-                content: Text('Учетная запись не найдена'),
+                content: Text('Введите корректный email'),
                 // backgroundColor: Colors.black,
               ),
             );
+          } else {
+            try {
+              User user = await UserRepository().restorePass(
+                email: _restoreController.text,
+              );
+
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Пароль сброшен, проверьте электронную почту'),
+                  // backgroundColor: Colors.black,
+                ),
+              );
+              setState(() {
+                _index = 0;
+                restoreScreenVisibility = false;
+                loginScreenVisibility = true;
+                registerScreenVisibility = false;
+              });
+            } catch (e) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Учетная запись не найдена'),
+                  // backgroundColor: Colors.black,
+                ),
+              );
+            }
           }
-
-
         }
       // word
       // if (restoreformKey.currentState.validate()) {
